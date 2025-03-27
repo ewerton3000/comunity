@@ -1,24 +1,28 @@
-# Usando uma imagem base (exemplo para Node.js)
-FROM node:16
-
-# Defina o diretório de trabalho no container
+# Etapa 1: Build da aplicação
+FROM node:16-alpine AS builder
 WORKDIR /app
 
-# Copiar o script de execução para dentro do container
-COPY start.sh /usr/local/bin/start.sh
-
-# Tornar o script executável
-RUN chmod +x /usr/local/bin/start.sh
-
-# Instalar dependências do seu projeto (exemplo para Node.js)
+# Copie os arquivos de package e instale as dependências
 COPY package*.json ./
 RUN npm install
 
-# Copiar o restante do código da aplicação
+# Copie o restante do código e execute o build
 COPY . .
+RUN npm run build
 
-# Expor a porta (ajuste conforme necessário)
+# Etapa 2: Criar a imagem final de produção
+FROM node:16-alpine
+WORKDIR /app
+
+# Instale somente as dependências de produção
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copie os arquivos compilados do estágio de build
+COPY --from=builder /app/dist ./dist
+
+# Exponha a porta (ajuste conforme sua configuração, geralmente 3000)
 EXPOSE 3000
 
-# Comando para rodar o script durante a execução do container
-CMD ["bash", "/usr/local/bin/start.sh"]
+# Comando para iniciar a aplicação
+CMD ["node", "dist/main.js"]

@@ -24,10 +24,10 @@ export class Registration {
     @Column({ length: 20 })
     professional_description: string
 
-    @Column({ length: 15 })
+    @Column({ length: 100 })
     language: string
 
-    @Column({ length: 20 })
+    @Column({ length: 50 })
     type_of_service: string
 
     @Column({ length: 100 })
@@ -57,7 +57,7 @@ export class Registration {
     @Column({length:255})
     copy_of_professional_registration:string
 
-    @Column({ length: 10 }) 
+    @Column({ length: 100 }) 
     information_authorization: string
 }  
-                             
+                               

@@ -4,7 +4,7 @@ import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { Registration} from './entities/registration.entity';
 import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { File } from 'src/files/entities/file.entity';
+
 
 @Injectable()
 export class RegistrationService {

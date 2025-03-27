@@ -7,6 +7,7 @@ import { Registration } from './entities/registration.entity';
 import { DatabaseModule } from 'src/database/database.module';
 import { File } from 'src/files/entities/file.entity';
 
+
 @Module({
   imports: [DatabaseModule, TypeOrmModule.forFeature([Registration,File])],
   controllers: [RegistrationController],

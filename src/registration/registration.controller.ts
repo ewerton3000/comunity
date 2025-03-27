@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UploadedFiles, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UploadedFiles, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { RegistrationService } from './registration.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
@@ -21,24 +21,26 @@ export class RegistrationController {
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'photo', maxCount: 1 },
-      { name: 'teste', maxCount: 1 },
+      { name: 'copy_of_professional_registration', maxCount: 1 },
     ], multerConfig)
   )
   async createRegistrationWithFiles(
     @Body() registrationData: any,
     @UploadedFiles()
     files: { 
-      photo?: Express.Multer.File[]; 
+      photo?: Express.Multer.File[], 
       copy_of_professional_registration?: Express.Multer.File[] 
     },
   ) {
     if (!files.photo || !files.copy_of_professional_registration) {
+      console.log('arquivo',files.copy_of_professional_registration)
       throw new Error('Ambos os arquivos devem ser enviados');
     }
 
     const photoFile = files.photo[0];
     const registrationFile = files.copy_of_professional_registration[0];
-
+     
+    
     return this.registrationService.saveRegistrationFiles(
       registrationData,
       photoFile,
@@ -47,14 +49,14 @@ export class RegistrationController {
   }
   
 
-  @Get()
-  findAll() {
-    return this.registrationService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.registrationService.findOne(+id);
+  }
+
+  @Get()
+  async finding(@Query() query: any) {
+    return this.registrationService.finding(query);
   }
 
   @Patch(':id')

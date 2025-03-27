@@ -11,7 +11,7 @@ import { File } from './files/entities/file.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: async () => {
         const dataSource = await databaseProviders[0].useFactory();

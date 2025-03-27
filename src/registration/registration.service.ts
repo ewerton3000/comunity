@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { Registration} from './entities/registration.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from 'src/files/entities/file.entity';
 
@@ -47,8 +47,30 @@ export class RegistrationService {
   return this.registrationRepository.save(registration);
 }
 
+async finding(query: any) {
+  const { name, status, area_of_activity } = query;
 
-  findAll() {
+  const queryBuilder = this.registrationRepository.createQueryBuilder('registration');
+
+  // Adicionando filtro de nome
+  if (name) {
+    queryBuilder.andWhere('registration.name LIKE :name', { name: `%${name}%` });
+  }
+
+  // Adicionando filtro de status
+  if (status) {
+    queryBuilder.andWhere('registration.status = :status', { status });
+  }
+
+  // Adicionando filtro de área de atividade
+  if (area_of_activity) {
+    queryBuilder.andWhere('registration.area_of_activity = :area_of_activity', { area_of_activity });
+  }
+
+  // Executando a consulta com os filtros aplicados
+  return queryBuilder.getMany();
+}
+ findAll() {
     return this.registrationRepository.find();
   }
  
